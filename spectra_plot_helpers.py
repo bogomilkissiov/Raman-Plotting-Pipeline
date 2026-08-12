@@ -5,40 +5,9 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import imageio.v2 as imageio
 from cycler import cycler
-from renishawWiRE import WDFReader
 from spectra_class import spectra
 import processing_helpers as ph
 from gruvbox_theme import GRUVBOX, apply_gruvbox_theme
-
-########################
-# PROCESSING FUNCTIONS #
-########################
-def wdf_to_spectra(wdf_filepath : str) -> list[spectra]:
-    """
-    Parses a Renishaw WDF map file and returns a list of spectra objects.
-    Each spectra object contains:
-      - position_vector: [x, y] stage coordinates
-      - wavenumber_vector: 1D array of wavenumbers
-      - intensity_vector: 1D array of intensities
-    """
-    reader = WDFReader(wdf_filepath)
-    wavenumbers = reader.xdata
-    spectra_data = reader.spectra
-
-    if spectra_data.ndim == 1:
-        spectra_data = spectra_data.reshape(1, -1)
-    elif spectra_data.ndim > 2:
-        spectra_data = spectra_data.reshape(-1, spectra_data.shape[-1])
-        
-    x_coords = np.ravel(reader.xpos) if reader.xpos is not None else np.zeros(len(spectra_data))
-    y_coords = np.ravel(reader.ypos) if reader.ypos is not None else np.zeros(len(spectra_data))
-        
-    spectra_list = []
-    for i in range(len(spectra_data)):
-        pos = [x_coords[i], y_coords[i]]
-        spectra_list.append(spectra(pos, wavenumbers, spectra_data[i]))
-        
-    return spectra_list
 
 ######################
 # PLOTTING FUNCTIONS #

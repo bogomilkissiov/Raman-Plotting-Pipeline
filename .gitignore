@@ -7,6 +7,8 @@ __pycache__/
 
 # Data files
 *.wdf
+*.spc
+*.txt
 *.npz
 
 # Generated plot images
