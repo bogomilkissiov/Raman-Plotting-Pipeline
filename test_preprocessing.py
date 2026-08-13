@@ -1,6 +1,6 @@
 import numpy as np
 from spectra_class import spectrum, spectra
-from processing_helpers import preprocess_pipeline, despike_spectra, denoise_spectra, remove_baseline, normalize_spectra, background_removal_silicon
+from preprocessing import preprocess_pipeline, despike_spectra, denoise_spectra, remove_baseline, normalize_spectra, shift_to_zero, background_removal_silicon
 
 def test_pipeline_types():
     print("Creating dummy spectra test data...")

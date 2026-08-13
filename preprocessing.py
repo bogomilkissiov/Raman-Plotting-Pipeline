@@ -308,17 +308,27 @@ def normalize_spectra(wavenumbers, intensities):
     return z_scores
 
 # ==========================================
+# NON-NEGATIVE / MIN-ZERO SHIFT
+# ==========================================
+@process_spectra_data
+def shift_to_zero(wavenumbers, intensities):
+    """ Shifts each spectrum upwards so that its minimum intensity is at y=0. """
+    min_vals = np.min(intensities, axis=1, keepdims=True)
+    return intensities - min_vals
+
+# ==========================================
 # PREPROCESSING PIPELINE
 # ==========================================
 def preprocess_pipeline(data):
     """
     Takes in a single spectrum object, a list of spectrum objects, or a spectra object.
     Runs them through the preprocessing pipeline modifying the objects in place.
-    Pipeline steps: despike -> denoise -> baseline removal -> normalization
+    Pipeline steps: despike -> denoise -> baseline removal -> normalization -> shift_to_zero
     """
     despike_spectra(data)
     denoise_spectra(data)
     remove_baseline(data)
     normalize_spectra(data)
+    shift_to_zero(data)
     return data
 

@@ -112,12 +112,22 @@ def plot_spectra(
         plt.show()
 
 # 2D PCA plot with color for PC3
-def plot_PC2(spectral_data, pc3_color: bool = False, filepath: str = None, show: bool = True):
+def plot_PC2(
+    spectral_data,
+    color: str = None,
+    point_size: float = 15,
+    alpha: float = 0.95,
+    pc3_color: bool = False,
+    filepath: str = None,
+    show: bool = True):
     """
     Plots the first two principal components from Raman spectral data.
     Assumes all data is collected in the same wavenumber range.
     Args:
         spectral_data: `spectrum` object, list of `spectrum` objects, or `spectra` object.
+        color: Color of data points (default: Gruvbox yellow). Accepts hex, named colors, or Gruvbox keys.
+        point_size: Size of data points (default: 15).
+        alpha: Opacity of data points (default: 0.99).
         pc3_color: Whether to color the points by the third principal component.
         filepath: Optional path to save the composite plot figure.
         show: Whether to display the plot (default: True).
@@ -158,6 +168,7 @@ def plot_PC2(spectral_data, pc3_color: bool = False, filepath: str = None, show:
     var_pc2 = var_explained[1] * 100
 
     fig, ax = plt.subplots(figsize=(8, 6))
+    pt_color = GRUVBOX.get(color, color) if color else GRUVBOX.get("yellow", "#fabd2f")
 
     if pc3_color and scores.shape[1] >= 3:
         pc3 = scores[:, 2]
@@ -166,21 +177,21 @@ def plot_PC2(spectral_data, pc3_color: bool = False, filepath: str = None, show:
             pc1, pc2,
             c=pc3,
             cmap="gruvbox_rainbow",
-            edgecolors=GRUVBOX.get("bg0", "#282828"),
-            linewidth=0.8,
-            s=60,
-            alpha=0.9
+            edgecolors="none",
+            linewidths=0,
+            s=point_size,
+            alpha=alpha
         )
         cbar = fig.colorbar(scatter, ax=ax)
         cbar.set_label(f"PC3 ({var_pc3:.1f}% Variance)")
     else:
         ax.scatter(
             pc1, pc2,
-            color=GRUVBOX.get("yellow", "#fabd2f"),
-            edgecolors=GRUVBOX.get("bg0", "#282828"),
-            linewidth=0.8,
-            s=60,
-            alpha=0.9
+            color=pt_color,
+            edgecolors="none",
+            linewidths=0,
+            s=point_size,
+            alpha=alpha
         )
 
     ax.set_xlabel(f"PC1 ({var_pc1:.1f}% Variance)")
@@ -198,12 +209,22 @@ def plot_PC2(spectral_data, pc3_color: bool = False, filepath: str = None, show:
     return fig, ax
 
 # 3D PCA plot
-def plot_PC3(spectral_data, pc4_color: bool = False, filepath: str = None, show: bool = True):
+def plot_PC3(
+    spectral_data,
+    color: str = None,
+    point_size: float = 15,
+    alpha: float = 0.99,
+    pc4_color: bool = False,
+    filepath: str = None,
+    show: bool = True):
     """
     Plots the first three principal components from Raman spectral data.
     Assumes all data is collected in the same wavenumber range.
     Args:
         spectral_data: `spectrum` object, list of `spectrum` objects, or `spectra` object.
+        color: Color of data points (default: Gruvbox yellow). Accepts hex, named colors, or Gruvbox keys.
+        point_size: Size of data points (default: 15).
+        alpha: Opacity of data points (default: 0.99).
         pc4_color: Whether to color the points by the fourth principal component.
         filepath: Optional path to save the composite plot figure.
         show: Whether to display the plot (default: True).
@@ -258,6 +279,8 @@ def plot_PC3(spectral_data, pc4_color: bool = False, filepath: str = None, show:
     ax.yaxis.pane.set_edgecolor(GRUVBOX.get("bg4", "#7c6f64"))
     ax.zaxis.pane.set_edgecolor(GRUVBOX.get("bg4", "#7c6f64"))
 
+    pt_color = GRUVBOX.get(color, color) if color else GRUVBOX.get("yellow", "#fabd2f")
+
     if pc4_color and scores.shape[1] >= 4:
         pc4 = scores[:, 3]
         var_pc4 = var_explained[3] * 100
@@ -265,21 +288,21 @@ def plot_PC3(spectral_data, pc4_color: bool = False, filepath: str = None, show:
             pc1, pc2, pc3,
             c=pc4,
             cmap="gruvbox_rainbow",
-            edgecolors=GRUVBOX.get("bg0", "#282828"),
-            linewidth=0.8,
-            s=60,
-            alpha=0.9
+            edgecolors="none",
+            linewidths=0,
+            s=point_size,
+            alpha=alpha
         )
         cbar = fig.colorbar(scatter, ax=ax, pad=0.1, shrink=0.7)
         cbar.set_label(f"PC4 ({var_pc4:.1f}% Variance)")
     else:
         ax.scatter(
             pc1, pc2, pc3,
-            color=GRUVBOX.get("yellow", "#fabd2f"),
-            edgecolors=GRUVBOX.get("bg0", "#282828"),
-            linewidth=0.8,
-            s=60,
-            alpha=0.9
+            color=pt_color,
+            edgecolors="none",
+            linewidths=0,
+            s=point_size,
+            alpha=alpha
         )
 
     ax.set_xlabel(f"PC1 ({var_pc1:.1f}% Variance)")
@@ -300,6 +323,9 @@ def plot_PC3(spectral_data, pc4_color: bool = False, filepath: str = None, show:
 # 3D PCA plot with angle shift animation (2-frame)
 def plot_PC3_animated(
     spectral_data,
+    color: str = None,
+    point_size: float = 15,
+    alpha: float = 0.99,
     pc4_color: bool = False,
     filepath: str = None,
     show: bool = True,
@@ -311,6 +337,9 @@ def plot_PC3_animated(
     
     Args:
         spectral_data: `spectrum` object, list of `spectrum` objects, or `spectra` object.
+        color: Color of data points (default: Gruvbox yellow).
+        point_size: Size of data points (default: 15).
+        alpha: Opacity of data points (default: 0.7).
         pc4_color: Whether to color the points by the fourth principal component.
         filepath: Optional path to save the .gif animation.
         show: Whether to display the animation (default: True).
@@ -318,7 +347,15 @@ def plot_PC3_animated(
         fps: Frames per second for the oscillating gif (default: 4).
     """
     # Generate the base 3D PCA plot figure
-    fig, ax = plot_PC3(spectral_data, pc4_color=pc4_color, filepath=None, show=False)
+    fig, ax = plot_PC3(
+        spectral_data,
+        color=color,
+        point_size=point_size,
+        alpha=alpha,
+        pc4_color=pc4_color,
+        filepath=None,
+        show=False
+    )
 
     elev = ax.elev if ax.elev is not None else 30
     azim = ax.azim if ax.azim is not None else -60
@@ -468,7 +505,8 @@ def intensity_heatmap(
     cmap: str = "gruvbox_heat",
     title: str = None,
     filepath: str = None,
-    show: bool = False):
+    show: bool = False,
+    show_wavenumber_bar: bool = False):
     """
     Creates a spatial heatmap of intensity for a specific wavenumber index on a binned rectangular grid of square cells.
     The grid dimensions [nx, ny] enforce an nx:ny side proportion and cell density, fitted to the edge spectra.
@@ -484,6 +522,7 @@ def intensity_heatmap(
         title: Optional title for the plot.
         filepath: Optional path to save the plot.
         show: Whether to display the plot (default: False).
+        show_wavenumber_bar: Whether to display a vertical wavenumber range indicator bar on the left (default: False).
         
     Returns:
         tuple: (fig, ax)
@@ -584,14 +623,32 @@ def intensity_heatmap(
             vmin = 0.0 if vmin is None else vmin
             vmax = 1.0 if vmax is None else vmax
             
-    fig, ax = plt.subplots(figsize=(8, 6))
+    if show_wavenumber_bar:
+        fig = plt.figure(figsize=(9.5, 6))
+        gs = fig.add_gridspec(1, 2, width_ratios=[0.06, 1], wspace=0.25)
+        ax_bar = fig.add_subplot(gs[0, 0])
+        ax = fig.add_subplot(gs[0, 1])
+
+        wavenumber_min = float(np.nanmin(spectral_data.wavenumbers))
+        wavenumber_max = float(np.nanmax(spectral_data.wavenumbers))
+
+        ax_bar.set_facecolor(GRUVBOX.get("bg1", "#3c3836"))
+        ax_bar.set_xlim(0, 1)
+        ax_bar.set_ylim(wavenumber_min, wavenumber_max)
+        ax_bar.set_ylabel("Wavenumber ($cm^{-1}$)")
+        ax_bar.set_xticks([])
+
+        ax_bar.axhspan(wavenumber_min, wavenumber_max, color=GRUVBOX.get("bg1", "#3c3836"), alpha=0.8)
+        ax_bar.axhline(target_wavenumber, color=GRUVBOX.get("yellow", "#fabd2f"), linewidth=1.5)
+    else:
+        fig, ax = plt.subplots(figsize=(8, 6))
     
     # pcolormesh requires C with shape (len(y_edges)-1, len(x_edges)-1), so H.T is used
     mesh = ax.pcolormesh(x_edges, y_edges, H.T, shading='flat', vmin=vmin, vmax=vmax, cmap=cmap_obj)
     ax.set_aspect('equal')
     ax.set_facecolor(GRUVBOX["bg0"])
     
-    cbar = fig.colorbar(mesh, ax=ax)
+    cbar = fig.colorbar(mesh, ax=ax, pad=0.04)
     cbar.set_label("Summed Intensity")
     
     ax.set_xlabel("X Position")
@@ -621,7 +678,8 @@ def animate_heatmaps(
     fps: int = 15):
     """
     Creates an animated GIF of intensity heatmaps sweeping across wavenumbers on a binned rectangular grid of square cells.
-    The brightness is normalized across all frames for consistency, and empty cells are rendered as dark background.
+    The brightness is normalized across all frames for consistency, empty cells are rendered as dark background, and
+    a vertical wavenumber progress bar is displayed on the left side.
     
     Args:
         spectral_data: `spectra` object, `spectrum` object, or list of `spectrum` objects.
@@ -734,7 +792,8 @@ def animate_heatmaps(
             vmax=vmax,
             cmap=cmap,
             title=title,
-            show=False
+            show=False,
+            show_wavenumber_bar=True
         )
         if fig is None:
             continue

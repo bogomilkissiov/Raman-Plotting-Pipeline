@@ -14,9 +14,9 @@ import spectra_plotters as sp
 import file_loaders as fl
 
 # Data filepaths
-wdf_path = "data/1s_100lp_map-2 (1).wdf"
-spc_path = "data/1s_100lp_map-2 (1).spc"
-txt_path = "data/1s_100lp_map-2 (1).txt"
+wdf_path = "test_data/1s_100lp_map-2 (1).wdf"
+spc_path = "test_data/1s_100lp_map-2 (1).spc"
+txt_path = "test_data/1s_100lp_map-2 (1).txt"
 
 # load data as list of spectrum objects
 wdf_spectrum = fl.wdf_to_spectra(wdf_path, pack=False)
