@@ -39,26 +39,6 @@ class spectrum:
     def y(self):
         return self.position_vector[1] if self.position_vector is not None else None
 
-    @classmethod
-    def from_wdf(cls, wdf_filepath: str):
-        """Loads a wdf file and returns a list of `spectrum` objects (or single object if only one exists)."""
-        from file_loaders import wdf_to_spectra
-        res = wdf_to_spectra(wdf_filepath, pack=False)
-        return res[0] if len(res) == 1 else res
-
-    @classmethod
-    def from_spc(cls, spc_filepath: str):
-        """Loads an spc file and returns a list of `spectrum` objects (or single object if only one exists)."""
-        from file_loaders import spc_to_spectra
-        res = spc_to_spectra(spc_filepath, pack=False)
-        return res[0] if len(res) == 1 else res
-
-    @classmethod
-    def from_txt(cls, txt_filepath: str):
-        """Loads a txt file and returns a list of `spectrum` objects (or single object if only one exists)."""
-        from file_loaders import txt_to_spectra
-        res = txt_to_spectra(txt_filepath, pack=False)
-        return res[0] if len(res) == 1 else res
 
 ############################
 # SPECTRA CLASS DEFINITION #
