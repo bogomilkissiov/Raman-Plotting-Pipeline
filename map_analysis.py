@@ -10,7 +10,7 @@ from renishawWiRE import WDFReader
 from spectra_class import spectrum
 import processing_helpers as ph
 from gruvbox_theme import GRUVBOX, apply_gruvbox_theme
-from spectra_plot_helpers import wdf_to_spectra, calculate_intensity_variances, plot_intensity_variances, intensity_heatmap, intensity_extrema, animate_heatmaps
+from spectra_plotters import wdf_to_spectra, calculate_intensity_variances, plot_intensity_variances, intensity_heatmap, intensity_extrema, animate_heatmaps
 
 fivesec_0 = "5s_100lp_map.wdf"
 fivesec_1 = "5s_100lp_map-1.wdf"
