@@ -9,12 +9,12 @@ from scipy.optimize import curve_fit
 from skimage.restoration import denoise_wavelet
 import peakutils
 import BaselineRemoval
-from spectra_class import spectra
+from spectra_class import spectrum
 
 # ==========================================
 # 1. SPIKE REMOVAL (Cosmic Rays & Dead Pixels)
 # ==========================================
-def med_z_score(spec: spectra):
+def med_z_score(spec: spectrum):
     """ Function to calculate modified Z-scores """
     intensity = spec.intensities
     intensity_median = np.median(intensity)
@@ -22,7 +22,7 @@ def med_z_score(spec: spectra):
     z_scores = 0.6745*(intensity - intensity_median) / (intensity_mad + 1e-12) 
     return z_scores
 
-def whit_z_score(spec: spectra, absolute=True):
+def whit_z_score(spec: spectrum, absolute=True):
     """
     Extract the differenced series (ie. y[n+1] - y[n])
     and calculate the modified z-score from it
@@ -31,7 +31,7 @@ def whit_z_score(spec: spectra, absolute=True):
     delta_intensity = np.diff(intensity) # n-1 sizing
     delta_intensity = np.insert(delta_intensity, 0, [0])
     
-    temp_spec = spectra(spec.position_vector, spec.wavenumbers, delta_intensity)
+    temp_spec = spectrum(spec.wavenumbers, delta_intensity, spec.position_vector)
     if not absolute:
         return med_z_score(temp_spec)
     return np.abs(med_z_score(temp_spec))
@@ -67,7 +67,7 @@ def find_adjacent_neighbors(series, item):
     
     return common_neighbors + find_adjacent_neighbors(series_condensed, lb_neighbor) + find_adjacent_neighbors(series_condensed, ub_neighbor)
 
-def spike_removal(spec: spectra, threshold=10, m=4):
+def spike_removal(spec: spectrum, threshold=10, m=4):
     """ 
     Spike removal at location signifying spikes
     m is ~= window size / 2
@@ -108,10 +108,10 @@ def spike_removal(spec: spectra, threshold=10, m=4):
         
     return intensity_spikeless, spikes_raw
 
-def despike_spectra(spec: spectra):
+def despike_spectra(spec: spectrum):
     """
-    For any given single spectra, run the outlier removal step.
-    Modifies spectra object in place.
+    For any given single spectrum, run the outlier removal step.
+    Modifies spectrum object in place.
     """
     f_int, f_spikes = spike_removal(spec)
     spec.intensities = f_int
@@ -120,7 +120,7 @@ def despike_spectra(spec: spectra):
 # ==========================================
 # 2. STITCHING CORRECTION
 # ==========================================
-def restitch_spectra(spec: spectra):
+def restitch_spectra(spec: spectrum):
     """ Fixes Horiba bad stitching artifacts by interpolating over sudden dips """
     wavenumbers = spec.wavenumbers
     intensity = spec.intensities
@@ -144,13 +144,13 @@ def restitch_spectra(spec: spectra):
 # ==========================================
 # 3. WAVELET DENOISING
 # ==========================================
-def log10_transform(spec: spectra):
+def log10_transform(spec: spectrum):
     intensity = spec.intensities
     min_val = np.min(intensity)
     shift = abs(min_val) + 1.0 if min_val <= 0 else 1.0
     return np.log10(intensity + shift), shift
 
-def denoise_spectra(spec: spectra):
+def denoise_spectra(spec: spectrum):
     """ Wavelet transform for noise reduction using BayesShrink """
     if np.max(spec.intensities) == np.min(spec.intensities):
         return spec
@@ -165,7 +165,7 @@ def denoise_spectra(spec: spectra):
 # ==========================================
 # 4. BASELINE SUBTRACTION
 # ==========================================
-def arpls(spec: spectra, lam=1e4, ratio=0.05, itermax=100):
+def arpls(spec: spectrum, lam=1e4, ratio=0.05, itermax=100):
     """ Asymmetrically reweighted penalized least squares smoothing (Baek et al. 2015) """
     y = spec.intensities
     N = len(y)
@@ -190,7 +190,7 @@ def arpls(spec: spectra, lam=1e4, ratio=0.05, itermax=100):
         w = wt
     return z
 
-def remove_baseline(spec: spectra, order=3, method='combo', l_=100):
+def remove_baseline(spec: spectrum, order=3, method='combo', l_=100):
     """
     Determines baseline via desired methodologies:
         - 'poly'    : adaptive polynomial fitting (PeakUtils)
@@ -243,8 +243,8 @@ def silicon_background_2order(x, x01, x02, x03, sigma1, sigma2, sigma3, gamma1, 
             voigt_profile(x, x02, sigma2, gamma2, height2, offset=0) +
             voigt_profile(x, x03, sigma3, gamma3, height3, offset=0))
 
-def background_removal_silicon(spec: spectra):
-    """ Single spectra background removal of silicon optical phonons. """
+def background_removal_silicon(spec: spectrum):
+    """ Single spectrum background removal of silicon optical phonons. """
     wavenumbers = spec.wavenumbers
     intensity = spec.intensities
     mask = (wavenumbers >= 800) & (wavenumbers <= 1150)
@@ -277,7 +277,7 @@ def background_removal_silicon(spec: spectra):
 # ==========================================
 # 6. NORMALIZATION
 # ==========================================
-def normalize_spectra(spec: spectra):
+def normalize_spectra(spec: spectrum):
     """ Normalize spectra by computing the z-score based off of the mean. """
     intensity = spec.intensities
     intensity_mean = np.mean(intensity)
@@ -291,12 +291,12 @@ def normalize_spectra(spec: spectra):
 # ==========================================
 def preprocess_pipeline(data):
     """
-    Takes in a single spectra object or a list of spectra objects.
+    Takes in a single spectrum object or a list of spectrum objects.
     Runs them through the preprocessing pipeline modifying the objects in place.
     Pipeline steps: despike -> restitch -> denoise -> baseline removal -> normalization
     """
     is_single = False
-    if isinstance(data, spectra):
+    if isinstance(data, spectrum):
         data = [data]
         is_single = True
         

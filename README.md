@@ -4,9 +4,9 @@ A Python toolkit for loading, preprocessing, and visualizing Raman spectra mappi
 
 ## Project Structure
 
-- `spectra_class.py`: Defines the core `spectra` data class (`position_vector`, `wavenumber_vector`, `intensity_vector`).
+- `spectra_class.py`: Defines the core `spectrum` data class (`wavenumber_vector`, `intensity_vector`, `position_vector`).
 - `processing_helpers.py`: Functions for despiking, restitching, denoising, baseline removal, and normalization.
-- `spectra_plot_helpers.py`: Utilities for converting `.wdf` files to `spectra` objects, computing intensity variances, and generating heatmaps/animations.
+- `spectra_plot_helpers.py`: Utilities for converting data files to `spectrum` objects, computing intensity variances, and generating heatmaps/animations.
 - `map_analysis.py`: Main processing script.
 - `gruvbox_theme.py`: Custom color themes for Matplotlib/Seaborn plots.
 

@@ -5,16 +5,16 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import imageio.v2 as imageio
 from cycler import cycler
-from spectra_class import spectra
+from spectra_class import spectrum
 import processing_helpers as ph
 from gruvbox_theme import GRUVBOX, apply_gruvbox_theme
 
 ######################
 # PLOTTING FUNCTIONS #
 ######################
-def calculate_intensity_variances(spectra_list : list[spectra]) -> np.ndarray:
+def calculate_intensity_variances(spectra_list : list[spectrum]) -> np.ndarray:
     """
-    Calculates the variance in intensity at each wavenumber across a list of spectra objects.
+    Calculates the variance in intensity at each wavenumber across a list of spectrum objects.
     Returns a 2xN numpy array where:
       - row 0: wavenumbers
       - row 1: intensity variances
@@ -28,13 +28,13 @@ def calculate_intensity_variances(spectra_list : list[spectra]) -> np.ndarray:
     
     return np.vstack((wavenumbers, variances))
 
-def plot_intensity_variances(spectra_list : list[spectra],
+def plot_intensity_variances(spectra_list : list[spectrum],
     title: str = "Wavenumber vs Intensity Variance",
     color: str = None,
     save_path: str = None,
     show: bool = True):
     """
-    Plots wavenumber vs intensity variance across a list of spectra objects using the Gruvbox theme.
+    Plots wavenumber vs intensity variance across a list of spectrum objects using the Gruvbox theme.
     """
     variance_matrix = calculate_intensity_variances(spectra_list)
     if variance_matrix.size == 0:
@@ -62,7 +62,7 @@ def plot_intensity_variances(spectra_list : list[spectra],
     return fig, ax
 
 def intensity_heatmap(
-    spectra_list: list[spectra],
+    spectra_list: list[spectrum],
     wavenumber_idx: int,
     vmin: float = None,
     vmax: float = None,
@@ -75,7 +75,7 @@ def intensity_heatmap(
     The squares of the different spectra are related spatially by the coordinate vectors.
     
     Args:
-        spectra_list: List of spectra objects.
+        spectra_list: List of spectrum objects.
         wavenumber_idx: Integer index of the wavenumber to plot (e.g., 1 for the 2nd wavenumber).
         vmin: Minimum intensity threshold for the colormap.
         vmax: Maximum intensity threshold for the colormap.
@@ -129,12 +129,12 @@ def intensity_heatmap(
         
     return fig, ax
 
-def intensity_extrema(spectra_list: list[spectra]) -> tuple[float, float]:
+def intensity_extrema(spectra_list: list[spectrum]) -> tuple[float, float]:
     """
-    Finds the lowest and highest raw intensity values across a list of spectra objects.
+    Finds the lowest and highest raw intensity values across a list of spectrum objects.
     
     Args:
-        spectra_list: List of spectra objects.
+        spectra_list: List of spectrum objects.
         
     Returns:
         tuple[float, float]: (min_intensity, max_intensity)
@@ -148,7 +148,7 @@ def intensity_extrema(spectra_list: list[spectra]) -> tuple[float, float]:
     return float(min_intensity), float(max_intensity)
 
 def animate_heatmaps(
-    spectra_list: list[spectra],
+    spectra_list: list[spectrum],
     save_path: str,
     cmap: str = "gruvbox_heat",
     title: str = None,
@@ -159,7 +159,7 @@ def animate_heatmaps(
     The brightness is normalized to the min and max intensities for the whole spectra group.
     
     Args:
-        spectra_list: List of spectra objects.
+        spectra_list: List of spectrum objects.
         save_path: Mandatory file path to save the .gif output.
         cmap: Colormap to use.
         title: Base title for the plots.

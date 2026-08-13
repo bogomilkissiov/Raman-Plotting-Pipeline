@@ -7,7 +7,7 @@ import seaborn as sns
 import imageio.v2 as imageio
 from cycler import cycler
 from renishawWiRE import WDFReader
-from spectra_class import spectra
+from spectra_class import spectrum
 import processing_helpers as ph
 from gruvbox_theme import GRUVBOX, apply_gruvbox_theme
 from spectra_plot_helpers import wdf_to_spectra, calculate_intensity_variances, plot_intensity_variances, intensity_heatmap, intensity_extrema, animate_heatmaps
