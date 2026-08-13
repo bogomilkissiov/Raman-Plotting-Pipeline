@@ -506,7 +506,8 @@ def intensity_heatmap(
     title: str = None,
     filepath: str = None,
     show: bool = False,
-    show_wavenumber_bar: bool = False):
+    show_wavenumber_bar: bool = False,
+    show_spectra_positions: bool = True):
     """
     Creates a spatial heatmap of intensity for a specific wavenumber index on a binned rectangular grid of square cells.
     The grid dimensions [nx, ny] enforce an nx:ny side proportion and cell density, fitted to the edge spectra.
@@ -523,6 +524,7 @@ def intensity_heatmap(
         filepath: Optional path to save the plot.
         show: Whether to display the plot (default: False).
         show_wavenumber_bar: Whether to display a vertical wavenumber range indicator bar on the left (default: False).
+        show_spectra_positions: Whether to plot true (x, y) spectra acquisition coordinates as subtle black dots (default: True).
         
     Returns:
         tuple: (fig, ax)
@@ -647,6 +649,10 @@ def intensity_heatmap(
     mesh = ax.pcolormesh(x_edges, y_edges, H.T, shading='flat', vmin=vmin, vmax=vmax, cmap=cmap_obj)
     ax.set_aspect('equal')
     ax.set_facecolor(GRUVBOX["bg0"])
+
+    # Plot true acquisition (x, y) coordinates as small, subtle black dots
+    if show_spectra_positions:
+        ax.scatter(x_coords, y_coords, color="black", s=2, alpha=0.7, edgecolors="none", zorder=4)
     
     cbar = fig.colorbar(mesh, ax=ax, pad=0.04)
     cbar.set_label("Summed Intensity")
@@ -675,7 +681,8 @@ def animate_heatmaps(
     cmap: str = "gruvbox_heat",
     title: str = None,
     step_size: int = 10,
-    fps: int = 15):
+    fps: int = 15,
+    show_spectra_positions: bool = True):
     """
     Creates an animated GIF of intensity heatmaps sweeping across wavenumbers on a binned rectangular grid of square cells.
     The brightness is normalized across all frames for consistency, empty cells are rendered as dark background, and
@@ -689,6 +696,7 @@ def animate_heatmaps(
         title: Base title for the plots.
         step_size: How much the wavenumber index jumps between frames.
         fps: Frames per second for the output gif.
+        show_spectra_positions: Whether to plot true (x, y) spectra acquisition coordinates as subtle black dots (default: True).
     """
     if isinstance(spectral_data, spectrum):
         spectral_data = spectra([spectral_data])
@@ -793,7 +801,8 @@ def animate_heatmaps(
             cmap=cmap,
             title=title,
             show=False,
-            show_wavenumber_bar=True
+            show_wavenumber_bar=True,
+            show_spectra_positions=show_spectra_positions
         )
         if fig is None:
             continue
