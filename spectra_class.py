@@ -81,6 +81,31 @@ class spectra:
         obj.position_matrix = np.atleast_2d(position_matrix) if position_matrix is not None else None
         return obj
 
+    def __add__(self, other):
+        """
+        Stacks two spectra objects row-wise to form a combined spectra object.
+        """
+        if not isinstance(other, spectra):
+            return NotImplemented
+
+        new_wavenumbers = np.vstack([self.wavenumber_matrix, other.wavenumber_matrix])
+        new_intensities = np.vstack([self.intensity_matrix, other.intensity_matrix])
+
+        if self.position_matrix is not None and other.position_matrix is not None:
+            new_positions = np.vstack([self.position_matrix, other.position_matrix])
+        else:
+            new_positions = None
+
+        return spectra.from_matrices(new_wavenumbers, new_intensities, new_positions)
+
+    def __radd__(self, other):
+        """
+        Enables Python's built-in sum() on collections of spectra objects.
+        """
+        if other == 0:
+            return self
+        return self.__add__(other)
+
     def unpack(self):
         """
         Unpacks the matrices in this `spectra` object back into a list of individual `spectrum` objects.
@@ -145,5 +170,3 @@ class spectra:
     @property
     def y(self):
         return self.position_matrix[:, 1] if self.position_matrix is not None else None
-
-

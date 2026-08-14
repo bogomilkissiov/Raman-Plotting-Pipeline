@@ -677,7 +677,7 @@ def intensity_heatmap(
 def animate_heatmaps(
     spectral_data,
     filepath: str,
-    grid_dimensions: list = None,
+    grid_dimensions: list = [20,20],
     cmap: str = "gruvbox_heat",
     title: str = None,
     step_size: int = 10,
@@ -729,9 +729,7 @@ def animate_heatmaps(
             "Note: Renishaw WiRE exports to .spc format do not include stage position metadata. Use .wdf or .txt files for spatial heatmaps."
         )
         
-    if grid_dimensions is None:
-        grid_dimensions = [20, 20]
-    elif len(grid_dimensions) != 2:
+    if len(grid_dimensions) != 2:
         raise ValueError("grid_dimensions must be a list or tuple of 2 numbers: [nx, ny].")
         
     nx, ny = int(grid_dimensions[0]), int(grid_dimensions[1])

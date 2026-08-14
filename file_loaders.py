@@ -2,6 +2,35 @@ import numpy as np
 from renishawWiRE import WDFReader
 from spectra_class import spectrum, spectra
 
+# Fix for renishawWiRE strict origin validation error on certain map scans
+def _safe_parse_wmap(self):
+    try:
+        uid, pos, size = self.block_info["WMAP"]
+    except KeyError:
+        return
+    self.file_obj.seek(pos + 16)
+    x_start = self._WDFReader__read_type("float")
+    y_start = self._WDFReader__read_type("float")
+    unknown1 = self._WDFReader__read_type("float")
+    x_pad = self._WDFReader__read_type("float")
+    y_pad = self._WDFReader__read_type("float")
+    unknown2 = self._WDFReader__read_type("float")
+    spectra_w = self._WDFReader__read_type("int32")
+    spectra_h = self._WDFReader__read_type("int32")
+    self.map_shape = (spectra_w, spectra_h)
+    self.map_info = dict(
+        x_start=x_start,
+        y_start=y_start,
+        x_pad=x_pad,
+        y_pad=y_pad,
+        x_span=spectra_w * x_pad,
+        y_span=spectra_h * y_pad,
+        x_unit=self.xpos_unit,
+        y_unit=self.ypos_unit,
+    )
+
+WDFReader._parse_wmap = _safe_parse_wmap
+
 def wdf_to_spectra(wdf_filepath : str, pack : bool=False):
     """
     Parses a Renishaw WDF map file and returns a list of spectrum objects.
@@ -15,7 +44,10 @@ def wdf_to_spectra(wdf_filepath : str, pack : bool=False):
     spectra_data = reader.spectra
 
     if spectra_data.ndim == 1:
-        spectra_data = spectra_data.reshape(1, -1)
+        if wavenumbers.ndim == 1 and len(spectra_data) > len(wavenumbers) and len(spectra_data) % len(wavenumbers) == 0:
+            spectra_data = spectra_data.reshape(-1, len(wavenumbers))
+        else:
+            spectra_data = spectra_data.reshape(1, -1)
     elif spectra_data.ndim > 2:
         spectra_data = spectra_data.reshape(-1, spectra_data.shape[-1])
  

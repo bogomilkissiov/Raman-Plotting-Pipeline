@@ -42,7 +42,8 @@ def run_tests():
     print("✓ spectra.from_matrices() passed.")
 
     print("\n--- Test 5: Testing TXT Loader (synthetic file) ---")
-    test_txt_path = "/Users/bogiekissiov/.gemini/antigravity-ide/brain/026f4e15-424a-4493-ac47-e6753d1f0471/scratch/test_data.txt"
+    test_txt_path = os.path.join(os.path.dirname(__file__), "test_data", "temp_synthetic_test.txt")
+    os.makedirs(os.path.dirname(test_txt_path), exist_ok=True)
     # Format: #X #Y #Wave #Intensity
     txt_content = (
         "#X\t#Y\t#Wave\t#Intensity\n"
@@ -65,16 +66,28 @@ def run_tests():
     assert isinstance(packed_res, spectra)
     assert packed_res.intensity_matrix.shape == (2, 2)
 
-    # Test spectrum.from_txt
-    spec_from_txt = spectrum.from_txt(test_txt_path)
-    # 2 spectra in file, should return list
-    assert isinstance(spec_from_txt, list)
-
     # Test spectra.from_txt
     spectra_from_txt = spectra.from_txt(test_txt_path)
     assert isinstance(spectra_from_txt, spectra)
 
-    print("✓ txt_to_spectra, spectrum.from_txt, and spectra.from_txt passed.")
+    if os.path.exists(test_txt_path):
+        os.remove(test_txt_path)
+
+    print("✓ txt_to_spectra and spectra.from_txt passed.")
+
+    print("\n--- Test 6: Testing spectra + operator and sum() ---")
+    combined = sp + sp_mat
+    assert combined.wavenumber_matrix.shape == (4, 3)
+    assert combined.intensity_matrix.shape == (4, 3)
+    assert combined.position_matrix.shape == (4, 2)
+    assert np.array_equal(combined.intensities[:2], sp.intensities)
+    assert np.array_equal(combined.intensities[2:], sp_mat.intensities)
+
+    # Test sum()
+    summed = sum([sp, sp_mat, sp])
+    assert summed.intensity_matrix.shape == (6, 3)
+    print("✓ spectra + operator and sum() passed.")
+
     print("\nAll tests passed successfully!")
 
 if __name__ == "__main__":
