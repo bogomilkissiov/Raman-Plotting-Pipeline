@@ -23,4 +23,4 @@ __pycache__/
 
 # Local analysis scripts
 730_analysis.py
-806_analysis.py
+806_analysis.py*.egg-info/
