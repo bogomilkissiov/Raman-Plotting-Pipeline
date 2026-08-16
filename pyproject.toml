@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "raman-plotting"
+version = "0.1.0"
+description = "Raman Plotting and Preprocessing Pipeline"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "numpy",
+    "scipy",
+    "matplotlib",
+    "seaborn",
+    "astropy",
+    "renishawWiRE",
+    "BaselineRemoval",
+    "PyWavelets",
+    "peakutils"
+]
+
+[tool.setuptools]
+py-modules = [
+    "spectra_class",
+    "preprocessing",
+    "file_loaders",
+    "spectra_plotters",
+    "gruvbox_theme"
+]
