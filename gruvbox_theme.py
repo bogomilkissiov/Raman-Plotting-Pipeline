@@ -32,7 +32,7 @@ GRUVBOX = {
     "green_dark": "#98971a",
     "yellow_dark": "#d79921",
     "blue_dark": "#458588",
-    "purple_dark": "#b16286",
+    "purple_dark": "#4a2e88",
     "aqua_dark": "#689d6a",
     "orange_dark": "#d65d0e",
     "gray_dark": "#928374",
@@ -42,7 +42,7 @@ GRUVBOX = {
     "green": "#b8bb26",
     "yellow": "#fabd2f",
     "blue": "#83a598",
-    "purple": "#d3869b",
+    "purple": "#8f65d6",
     "aqua": "#8ec07c",
     "orange": "#fe8019",
     "gray": "#a89984",
@@ -83,8 +83,19 @@ gruvbox_heat_colors = [
 ]
 gruvbox_heat_cmap = LinearSegmentedColormap.from_list("gruvbox_heat", gruvbox_heat_colors)
 
+# Cool colormap: dark background -> purple_dark -> blue_dark -> blue -> bright fg0
+gruvbox_cool_colors = [
+    GRUVBOX["bg0"],
+    GRUVBOX["purple_dark"],
+    GRUVBOX["blue_dark"],
+    GRUVBOX["blue"],
+    GRUVBOX["fg0"],
+]
+gruvbox_cool_cmap = LinearSegmentedColormap.from_list("gruvbox_cool", gruvbox_cool_colors)
+
 mpl.colormaps.register(cmap=gruvbox_rainbow_cmap, name="gruvbox_rainbow")
 mpl.colormaps.register(cmap=gruvbox_heat_cmap, name="gruvbox_heat")
+mpl.colormaps.register(cmap=gruvbox_cool_cmap, name="gruvbox_cool")
 
 def apply_gruvbox_theme(bg="bg0", fg="fg1"):
     """

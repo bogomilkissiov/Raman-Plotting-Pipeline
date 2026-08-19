@@ -5,22 +5,31 @@ venv/
 __pycache__/
 *.pyc
 
-# Data files
+# Local data folders & scripts
+730_data/
+806_data/
+730_plots/
+806_plots/
+test_clustering/
+730_analysis.py
+806_analysis.py
+*.egg-info/
+
+# Generic data and plot patterns
 *.wdf
 *.spc
 *.txt
 *.npz
-
-# Generated plot images
 *.png
 *.gif
+
+# Whitelist tracking for test assets and gruvbox palette
+!gruvbox.png
+!test_data/**
+!test_plots/**
 
 # Jupyter Notebooks
 *.ipynb
 
 # OS files
 .DS_Store
-
-# Local analysis scripts
-730_analysis.py
-806_analysis.py*.egg-info/

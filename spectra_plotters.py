@@ -7,6 +7,7 @@ import imageio.v2 as imageio
 from spectra_class import spectrum, spectra
 from gruvbox_theme import GRUVBOX
 # this program was almost entirely vibecoded
+
 # stitch together multiple single spectra plots
 def plot_spectra(
     spectral_data,
@@ -561,11 +562,11 @@ def intensity_heatmap(
         grid_dimensions = [20, 20]
     elif len(grid_dimensions) != 2:
         raise ValueError("grid_dimensions must be a list or tuple of 2 numbers: [nx, ny].")
-        
+
     nx, ny = int(grid_dimensions[0]), int(grid_dimensions[1])
     if nx <= 0 or ny <= 0:
         raise ValueError("grid_dimensions values must be positive integers.")
-    
+
     intensities = spectral_data.intensities[:, wavenumber_index]
     target_wavenumber = np.nanmean(spectral_data.wavenumbers, axis=0)[wavenumber_index]
     
